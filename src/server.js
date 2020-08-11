@@ -1,7 +1,5 @@
 const log = require('./logger')
 const emoji = require('./emoji')
-const { GuildMember } = require('discord.js')
-const { channelByName, deleteChannel } = require('./helper')
 require('./helper')
 
 module.exports.init = discord => {
