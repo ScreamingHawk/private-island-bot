@@ -3,7 +3,6 @@ const emoji = require('./emoji')
 require('./helper')
 
 const discordjs = require('discord.js')
-const { inviteUser, reply } = require('./helper')
 const discord = new discordjs.Client()
 
 // Login
@@ -15,7 +14,7 @@ discord.login(process.env.DISCORD_TOKEN).then(() => {
 	process.exit(1)
 })
 
-// Begin conversation
+// Commands
 discord.on('message', msg => {
 	if (msg.author.id === discord.user.id || msg.channel !== managerChannel(discord)){
 		// Ignore myself and incorrect channel

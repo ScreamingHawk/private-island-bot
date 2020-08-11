@@ -7,8 +7,13 @@ module.exports = {
 	wave: '👋',
 	// Actions
 	shrug: '🤷‍♀️',
+	// Food
+	drink: '🍹',
+	martini: '🍸',
+	wine: '🍷',
 	// Things
 	box: '📦',
+	island: '🏝️',
 	robot: '🤖',
 	tada: '🎉',
 	// Misc

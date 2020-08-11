@@ -9,9 +9,33 @@ module.exports.reply = reply = (msg, content) => {
 // Get the guild
 module.exports.getGuild = getGuild = (discord) => discord.guilds.cache.first()
 
+// Find a channel by name
+module.exports.channelByName = channelByName = (discord, name) =>
+	this.getGuild(discord).channels.cache.find(c => c.name === name)
+
 // Get manager channel
 module.exports.managerChannel = managerChannel = discord =>
-	this.getGuild(discord).channels.cache.find(c => c.name === "manager")
+	this.channelByName(discord, "manager")
+
+// Add a welcome message to the notice-board
+module.exports.addWelcomeMessage = addWelcomeMessage = discord => {
+	this.channelByName(discord, "notice-board")
+		.send(emoji.island + "Welcome to Private Islands!" + emoji.island +
+			"\n" +
+			"\nThis server offers a self managed safe space for everyone. " +
+			`\nChat in ${this.channelByName(discord, "central")} to meet new people. ` +
+			`\nHit up the ${this.channelByName(discord, "manager")} to invite people to your private island. ` +
+			"\n" + 
+			"\nEveryone's private island is complety self managed. " +
+			`\nThe sever owner ${this.getGuild(discord).owner} is an unused account. ` +
+			"\nNo one will view your island without your express consent. " +
+			"\n" +
+			`\nIf you like what you see then head on over to ${this.channelByName(discord, "manager")} and request a \`move in\`! ` +
+			"\n" +
+			"\nGrab a martini at the bar, sit back and relax. " +
+			"\n" + emoji.drink + emoji.martini + emoji.wine
+		).catch(log.error)
+}
 
 // Find the role for everyone
 module.exports.everyoneRole = everyoneRole = (discord) =>
