@@ -78,3 +78,12 @@ module.exports.uninviteUser = uninviteUser = (discord, user, mention) => {
 			.catch(log.error)
 	}
 }
+
+// Make channel NSFW
+module.exports.nsfwChannel = nsfwChannel = (discord, user, nsfw) => {
+	const chan = this.findChannel(discord, user)
+	if (chan){
+		chan.setNSFW(nsfw)
+			.catch(log.error)
+	}
+}

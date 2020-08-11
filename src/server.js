@@ -35,7 +35,8 @@ discord.on('message', msg => {
 		reply(msg, 
 			"`move in` to set up your private island on the server\n" +
 			"`invite <tag_user>` to give a user access to your private island\n" +
-			"`boot <tag_user>` to remove a user from your private island"
+			"`boot <tag_user>` to remove a user from your private island\n" +
+			"`nsfw` `sfw` to make your island NSFW or SFW"
 		)
 		return
 	}
@@ -64,6 +65,22 @@ discord.on('message', msg => {
 		log.debug(`${msg.author.username} removing ${mention.username}`)
 		reply(msg, `Booting ${mention} from your island`)
 		uninviteUser(discord, msg.author, mention)
+		return
+	}
+
+	if (content.match(/^nsfw/i)){
+		// Make your island NSFW
+		log.debug(`${msg.author.username} nsfw`)
+		reply(msg, `Making your island NSFW`)
+		nsfwChannel(discord, msg.author, true)
+		return
+	}
+
+	if (content.match(/^sfw/i)){
+		// Make your island SFW
+		log.debug(`${msg.author.username} sfw`)
+		reply(msg, `Making your island SFW`)
+		nsfwChannel(discord, msg.author, false)
 		return
 	}
 })
