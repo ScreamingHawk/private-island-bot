@@ -3,6 +3,7 @@ const emoji = require('./emoji')
 require('./helper')
 
 const discordjs = require('discord.js')
+const { mentionOk } = require('./helper')
 const discord = new discordjs.Client()
 
 // Login
@@ -26,13 +27,14 @@ discord.on('message', msg => {
 		// Ignore myself and incorrect channel
 		return
 	}
-	if (msg.mentions.users.first() === discord.user){
-		// Say hi
-		reply(msg, `Hello ${msg.author} ${emoji.wave}\nHow may I help?`)
-		return
-	}
 
 	const content = msg.content
+	const mention = msg.mentions.users.first()
+
+	if (!mentionOk(discord, msg, mention)){
+		reply(msg, `${emoji.think} You can't do that...`)
+		return
+	}
 
 	if (content.match(/^help/i)){
 		// Display help info
@@ -57,7 +59,6 @@ discord.on('message', msg => {
 
 	if (content.match(/^invite (.*)/i) && msg.mentions.users.size > 0){
 		// Invite a user to your island
-		const mention = msg.mentions.users.first()
 		log.debug(`${msg.author.username} inviting ${mention.username}`)
 		reply(msg, `Inviting ${mention} to your island`)
 		inviteUser(discord, msg.author, mention)
@@ -66,7 +67,6 @@ discord.on('message', msg => {
 
 	if (content.match(/^boot (.*)/i) && msg.mentions.users.size > 0){
 		// Remove a user from your island
-		const mention = msg.mentions.users.first()
 		log.debug(`${msg.author.username} removing ${mention.username}`)
 		reply(msg, `Booting ${mention} from your island`)
 		uninviteUser(discord, msg.author, mention)

@@ -6,6 +6,10 @@ module.exports.reply = reply = (msg, content) => {
 		.catch(log.error)
 }
 
+// Check mention is ok
+module.exports.mentionOk = mentionOk = (discord, msg, mention) =>
+	mention !== discord.user && mention !== msg.author
+
 // Get the guild
 module.exports.getGuild = getGuild = (discord) => discord.guilds.cache.first()
 

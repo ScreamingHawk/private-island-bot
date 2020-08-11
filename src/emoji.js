@@ -5,8 +5,9 @@ module.exports = {
 	thumbsDown: '👎',
 	thumbsUp: '👍',
 	wave: '👋',
-	// Actions
+	// Faces
 	shrug: '🤷‍♀️',
+	think: '🤔',
 	// Food
 	drink: '🍹',
 	martini: '🍸',
