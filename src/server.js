@@ -7,13 +7,15 @@ module.exports.init = discord => {
 	setInterval(async () => {
 		const channel = managerChannel(discord)
 		let fetched = await channel.messages.fetch({limit: 100})
-		if (fetched.size >= 1){
+		if (fetched.size >= 2){
 			channel.send(`${emoji.robot} Clearing all messages...`)
-			setTimeout(() => {
-				clearChannel(channel)
+			setTimeout(async () => {
+				await clearChannel(channel)
+				addHelpMessage(channel)
 			}, 3000)
 		}
 	}, 120000)
+
 	// Commands
 	discord.on('message', async msg => {
 		const user = msg.author
@@ -61,15 +63,7 @@ module.exports.init = discord => {
 		if (content.match(/^help/i)){
 			// Display help info
 			log.debug("Showing help")
-			reply(msg, 
-				"*Island Management*\n" +
-				"`move in/out` to set up your private island on the server\n" +
-				"`invite @user` to give a user access to your private island\n" +
-				"`boot @user` to remove a user from your private island\n" +
-				"`nsfw/sfw` to make your island NSFW or SFW\n" +
-				"`colour/color ######` give yourself a colour role\n" +
-				"`reset` to burn down your private island and build it up again"
-			)
+			addHelpMessage(msg.channel)
 			return
 		}
 

@@ -1,4 +1,5 @@
 const log = require('./logger')
+const emoji = require('./emoji')
 
 // Reply to a message in a channel
 module.exports.reply = reply = (msg, content) => {
@@ -50,6 +51,21 @@ module.exports.addWelcomeMessage = addWelcomeMessage = discord => {
 			"\nGrab a martini at the bar, sit back and relax. " +
 			"\n" + emoji.drink + emoji.martini + emoji.wine
 		).catch(log.error)
+}
+
+// Add a help message to channel
+module.exports.addHelpMessage = addHelpMessage = channel => {
+	channel.send(
+		emoji.island + "**Island Management**" + emoji.island +
+		"\n```move in/out - to set up your private island on the server\n" +
+		"invite @user - to give a user access to your private island\n" +
+		"boot @user - to remove a user from your private island\n" +
+		"nsfw/sfw - to make your island NSFW or SFW\n" +
+		"colour/color ###### - give yourself a colour role\n" +
+		"reset - to burn down your private island and build it up again```" +
+		"Messages here are cleared every couple of minutes.\n" +
+		"You should probably mute this channel..."
+	).catch(log.error)
 }
 
 // Find the role for everyone
