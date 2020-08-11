@@ -16,6 +16,8 @@ A discord bot for moderating the Private Island server.
 
 `nsfw` `sfw` to mark your "private island" as NSFW or not.
 
+`colour ######` give yourself a specific colour. Accepts a hex code.
+
 `reset` to delete and recreate your "private island".
 
 ## Credits

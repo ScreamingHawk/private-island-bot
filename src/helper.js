@@ -56,6 +56,30 @@ module.exports.addWelcomeMessage = addWelcomeMessage = discord => {
 module.exports.everyoneRole = everyoneRole = (discord) =>
 	this.getGuild(discord).roles.cache.first()
 
+// Find role
+module.exports.findRole = findRole = (discord, name) =>
+	this.getGuild(discord).roles.cache.find(r => r.name === name)
+
+// Create role
+module.exports.createRole = createRole = (discord, colour, member) => {
+	if (!this.findRole(discord, colour)){
+		this.getGuild(discord).roles.create({
+			data: {
+				name: colour,
+				color: colour,
+				mentionable: false,
+				hoist: false,
+			},
+			reason: `${colour} role added for ${member.user.username}`,
+		})
+			.then(role => {
+				member.roles.add(role)
+					.catch(log.error)
+			})
+			.catch(log.error)
+	}
+}
+
 // Find island group
 module.exports.islandGroup = islandGroup = (discord) => {
 	return this.getGuild(discord).channels.cache.find(c => c.name === "islands")

@@ -15,7 +15,7 @@ module.exports.init = discord => {
 		}
 	}, 120000)
 	// Commands
-	discord.on('message', msg => {
+	discord.on('message', async msg => {
 		const user = msg.author
 		const content = msg.content
 		const mention = msg.mentions.users.first()
@@ -23,6 +23,34 @@ module.exports.init = discord => {
 		if (user.id === discord.user.id || msg.channel !== managerChannel(discord)){
 			// Ignore myself and incorrect channel
 			return
+		}
+
+		if (content.match(/^colou?r .*/i)){
+			let match = content.match(/([0-9a-fA-F]{6})/)
+			if (!match || match.length < 2){
+				log.debug(`${user.username} colour "${content}" is invalid`)
+				reply(msg, "Please use a valid hex code for your colour role.\ne.g. `colour ABC123`")
+				return
+			}
+			const colour = "#" + match[1]
+			log.debug(`Giving ${user.username} colour ${colour}`)
+			reply(msg, `Giving ${user.username} colour \`${colour}\``)
+			// First remove colour role from user
+			const member = getGuild(discord).member(user)
+			const oldRole = member.roles.cache.find(role => role.name.startsWith('#'))
+			if (oldRole){
+				log.debug(`Removing ${colour} role from ${user.username}`)
+				await member.roles.remove(oldRole)
+					.catch(log.error)
+			}
+			// Add new role
+			const role = findRole(discord, colour)
+			if (role){
+				member.roles.add(role)
+					.catch(log.error)
+			} else {
+				createRole(discord, colour, member)
+			}
 		}
 
 		if (!mentionOk(discord, msg, mention)){
@@ -34,10 +62,12 @@ module.exports.init = discord => {
 			// Display help info
 			log.debug("Showing help")
 			reply(msg, 
+				"*Island Management*\n" +
 				"`move in/out` to set up your private island on the server\n" +
 				"`invite @user` to give a user access to your private island\n" +
 				"`boot @user` to remove a user from your private island\n" +
 				"`nsfw/sfw` to make your island NSFW or SFW\n" +
+				"`colour/color ######` give yourself a colour role\n" +
 				"`reset` to burn down your private island and build it up again"
 			)
 			return
