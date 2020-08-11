@@ -21,6 +21,17 @@ module.exports.channelByName = channelByName = (discord, name) =>
 module.exports.managerChannel = managerChannel = discord =>
 	this.channelByName(discord, "manager")
 
+// Clear a channel
+module.exports.clearChannel = clearChannel = async channel => {
+	let fetched;
+	do {
+		fetched = await channel.messages.fetch({limit: 100})
+			.catch(log.error)
+		channel.bulkDelete(fetched)
+			.catch(log.error)
+	} while(fetched.size >= 2)
+}
+
 // Add a welcome message to the notice-board
 module.exports.addWelcomeMessage = addWelcomeMessage = discord => {
 	this.channelByName(discord, "notice-board")

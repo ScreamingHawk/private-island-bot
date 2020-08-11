@@ -3,6 +3,17 @@ const emoji = require('./emoji')
 require('./helper')
 
 module.exports.init = discord => {
+	// Clear channels on an interval
+	setInterval(async () => {
+		const channel = managerChannel(discord)
+		let fetched = await channel.messages.fetch({limit: 100})
+		if (fetched.size >= 1){
+			channel.send(`${emoji.robot} Clearing all messages...`)
+			setTimeout(() => {
+				clearChannel(channel)
+			}, 3000)
+		}
+	}, 10000)
 	// Commands
 	discord.on('message', msg => {
 		const user = msg.author
