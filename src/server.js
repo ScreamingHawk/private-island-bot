@@ -1,5 +1,7 @@
 const log = require('./logger')
 const emoji = require('./emoji')
+const { GuildMember } = require('discord.js')
+const { channelByName, deleteChannel } = require('./helper')
 require('./helper')
 
 module.exports.init = discord => {
@@ -15,6 +17,17 @@ module.exports.init = discord => {
 			}, 3000)
 		}
 	}, 120000)
+
+	// Welcome message
+	discord.on('guildMemberAdd', user => {
+		channelByName(discord, "central").send(`${user} has sailed ashore! Welcome ${emoji.boat}!`)
+	})
+
+	// Goodbye message
+	discord.on('guildMemberRemove', user => {
+		channelByName(discord, "central").send(`${user} has been voted off the island! Farewell ${emoji.boat}!`)
+		deleteChannel(discord, user)
+	})
 
 	// Commands
 	discord.on('message', async msg => {

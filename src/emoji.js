@@ -13,6 +13,7 @@ module.exports = {
 	martini: '🍸',
 	wine: '🍷',
 	// Things
+	boat: '⛵',
 	box: '📦',
 	island: '🏝️',
 	robot: '🤖',
