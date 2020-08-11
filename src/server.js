@@ -13,7 +13,7 @@ module.exports.init = discord => {
 				clearChannel(channel)
 			}, 3000)
 		}
-	}, 10000)
+	}, 120000)
 	// Commands
 	discord.on('message', msg => {
 		const user = msg.author
