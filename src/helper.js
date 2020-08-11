@@ -66,11 +66,11 @@ module.exports.createChannel = createChannel = (discord, user) => {
 			permissionOverwrites: [
 				{
 					id: discord.user.id,
-					allow: ['VIEW_CHANNEL'],
+					allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
 				},
 				{
 					id: user.id,
-					allow: ['VIEW_CHANNEL'],
+					allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
 				},
 				{
 					id: this.everyoneRole(discord).id,
