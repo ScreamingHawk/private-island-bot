@@ -9,6 +9,10 @@ module.exports.reply = reply = (msg, content) => {
 // Get the guild
 module.exports.getGuild = getGuild = (discord) => discord.guilds.cache.first()
 
+// Get manager channel
+module.exports.managerChannel = managerChannel = discord =>
+	this.getGuild(discord).channels.cache.find(c => c.name === "manager")
+
 // Find the role for everyone
 module.exports.everyoneRole = everyoneRole = (discord) =>
 	this.getGuild(discord).roles.cache.first()
