@@ -5,13 +5,14 @@ require('./helper')
 module.exports.init = discord => {
 	// Commands
 	discord.on('message', msg => {
-		if (msg.author.id === discord.user.id || msg.channel !== managerChannel(discord)){
+		const user = msg.author
+		const content = msg.content
+		const mention = msg.mentions.users.first()
+
+		if (user.id === discord.user.id || msg.channel !== managerChannel(discord)){
 			// Ignore myself and incorrect channel
 			return
 		}
-
-		const content = msg.content
-		const mention = msg.mentions.users.first()
 
 		if (!mentionOk(discord, msg, mention)){
 			reply(msg, `${emoji.think} You can't do that...`)
@@ -32,7 +33,6 @@ module.exports.init = discord => {
 
 		if (content.match(/^move in/i)){
 			// Move in a user
-			const user = msg.author
 			log.debug(`${user.username} moving in`)
 			reply(msg, `Moving in ${user} ${emoji.box}\nI hope you enjoy your stay`)
 			createChannel(discord, user)
@@ -41,7 +41,6 @@ module.exports.init = discord => {
 
 		if (content.match(/^move out/i)){
 			// Move out a user
-			const user = msg.author
 			log.debug(`${user.username} moving in`)
 			reply(msg, `Moving out ${user} ${emoji.wave}\nSee you later`)
 			deleteChannel(discord, user)
@@ -50,33 +49,33 @@ module.exports.init = discord => {
 
 		if (content.match(/^invite (.*)/i) && msg.mentions.users.size > 0){
 			// Invite a user to your island
-			log.debug(`${msg.author.username} inviting ${mention.username}`)
+			log.debug(`${user.username} inviting ${mention.username}`)
 			reply(msg, `Inviting ${mention} to your island`)
-			inviteUser(discord, msg.author, mention)
+			inviteUser(discord, user, mention)
 			return
 		}
 
 		if (content.match(/^boot (.*)/i) && msg.mentions.users.size > 0){
 			// Remove a user from your island
-			log.debug(`${msg.author.username} removing ${mention.username}`)
+			log.debug(`${user.username} removing ${mention.username}`)
 			reply(msg, `Booting ${mention} from your island`)
-			uninviteUser(discord, msg.author, mention)
+			uninviteUser(discord, user, mention)
 			return
 		}
 
 		if (content.match(/^nsfw/i)){
 			// Make your island NSFW
-			log.debug(`${msg.author.username} nsfw`)
+			log.debug(`${user.username} nsfw`)
 			reply(msg, `Making your island NSFW`)
-			nsfwChannel(discord, msg.author, true)
+			nsfwChannel(discord, user, true)
 			return
 		}
 
 		if (content.match(/^sfw/i)){
 			// Make your island SFW
-			log.debug(`${msg.author.username} sfw`)
+			log.debug(`${user.username} sfw`)
 			reply(msg, `Making your island SFW`)
-			nsfwChannel(discord, msg.author, false)
+			nsfwChannel(discord, user, false)
 			return
 		}
 	})
