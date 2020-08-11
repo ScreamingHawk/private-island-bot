@@ -39,6 +39,15 @@ module.exports.init = discord => {
 			return
 		}
 
+		if (content.match(/^move out/i)){
+			// Move out a user
+			const user = msg.author
+			log.debug(`${user.username} moving in`)
+			reply(msg, `Moving out ${user} ${emoji.wave}\nSee you later`)
+			deleteChannel(discord, user)
+			return
+		}
+
 		if (content.match(/^invite (.*)/i) && msg.mentions.users.size > 0){
 			// Invite a user to your island
 			log.debug(`${msg.author.username} inviting ${mention.username}`)
