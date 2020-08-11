@@ -1,3 +1,5 @@
+const log = require('./src/logger')
+
 // Initialise env
 require('dotenv').config()
 
@@ -8,5 +10,23 @@ if (!process.env.DISCORD_TOKEN){
 	process.exit(1)
 }
 
-// Start the app
-require('./src/server')
+const discordjs = require('discord.js')
+const discord = new discordjs.Client()
+
+// Login
+discord.login(process.env.DISCORD_TOKEN).then(() => {
+	log.info(`${discord.user.username} operational`)
+	// Fun status
+	if (Math.random() > 0.5){
+		discord.user.setActivity('with sand', { type: 'PLAYING' })
+	} else {
+		discord.user.setActivity('boats sail by', { type: 'WATCHING' })
+	}
+
+	// Start the app
+	require('./src/server').init(discord)
+}).catch(err => {
+	log.error("Unable to login to discord")
+	log.error(err)
+	process.exit(1)
+})

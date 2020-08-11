@@ -83,6 +83,16 @@ module.exports.createChannel = createChannel = (discord, user) => {
 	}
 }
 
+// Delete a channel for a user
+module.exports.deleteChannel = deleteChannel = (discord, user) => {
+	const chan = this.findChannel(discord, user)
+	if (chan){
+		log.debug(`Deleting channel for ${user.username}`)
+		chan.delete()
+			.catch(log.error);
+	}
+}
+
 // Add user to a user channel
 module.exports.inviteUser = inviteUser = (discord, user, mention) => {
 	const chan = this.findChannel(discord, user)
