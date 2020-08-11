@@ -8,6 +8,12 @@ const discord = new discordjs.Client()
 // Login
 discord.login(process.env.DISCORD_TOKEN).then(() => {
 	log.info(`${discord.user.username} operational`)
+	// Fun status
+	if (Math.random() > 0.5){
+		discord.user.setActivity('with sand', { type: 'PLAYING' })
+	} else {
+		discord.user.setActivity('boats sail by', { type: 'WATCHING' })
+	}
 }).catch(err => {
 	log.error("Unable to login to discord")
 	log.error(err)
