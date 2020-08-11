@@ -43,9 +43,9 @@ discord.on('message', msg => {
 
 	if (content.match(/^move in/i)){
 		// Move in a user
-		const user = msg.author.username
+		const user = msg.author
 		log.debug(`${user} moving in`)
-		reply(msg, `Moving in ${user} ${emoji.box}\nPlease hold...`)
+		reply(msg, `Moving in ${user} ${emoji.box}\nI hope you enjoy your stay`)
 		createChannel(discord, user)
 		return
 	}
