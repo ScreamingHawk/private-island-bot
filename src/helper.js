@@ -84,12 +84,15 @@ module.exports.createChannel = createChannel = (discord, user) => {
 }
 
 // Delete a channel for a user
-module.exports.deleteChannel = deleteChannel = (discord, user) => {
+module.exports.deleteChannel = deleteChannel = async (discord, user, callback) => {
 	const chan = this.findChannel(discord, user)
 	if (chan){
 		log.debug(`Deleting channel for ${user.username}`)
-		chan.delete()
+		await chan.delete()
 			.catch(log.error);
+	}
+	if (callback) {
+		callback()
 	}
 }
 

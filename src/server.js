@@ -47,6 +47,16 @@ module.exports.init = discord => {
 			return
 		}
 
+		if (content.match(/^reset/i)){
+			// Reset a user's channel
+			log.debug(`${user.username} moving in`)
+			reply(msg, `Resetting ${user}'s island ${emoji.island}\n`)
+			deleteChannel(discord, user, () => {
+				createChannel(discord, user)
+			})
+			return
+		}
+
 		if (content.match(/^invite (.*)/i) && msg.mentions.users.size > 0){
 			// Invite a user to your island
 			log.debug(`${user.username} inviting ${mention.username}`)
