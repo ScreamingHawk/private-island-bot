@@ -23,10 +23,11 @@ module.exports.init = discord => {
 			// Display help info
 			log.debug("Showing help")
 			reply(msg, 
-				"`move in` to set up your private island on the server\n" +
-				"`invite <tag_user>` to give a user access to your private island\n" +
-				"`boot <tag_user>` to remove a user from your private island\n" +
-				"`nsfw` `sfw` to make your island NSFW or SFW"
+				"`move in/out` to set up your private island on the server\n" +
+				"`invite @user` to give a user access to your private island\n" +
+				"`boot @user` to remove a user from your private island\n" +
+				"`nsfw/sfw` to make your island NSFW or SFW\n" +
+				"`reset` to burn down your private island and build it up again"
 			)
 			return
 		}
