@@ -103,6 +103,20 @@ module.exports.init = discord => {
 			return
 		}
 
+		if (match = content.match(/^rename (.*)/i)){
+			if (match.length < 2){
+				log.debug(`${user.username} renaming "${content}" is invalid`)
+				reply(msg, "Please enter a new name for your island.\ne.g. `rename Coolest Island`")
+				return
+			}
+			// Rename a user channel
+			const name = match[1]
+			log.debug(`${user.username} renaming to ${name}`)
+			reply(msg, `Renaming ${user}'s island to ${name}\n`)
+			renameChannel(discord, user, name)
+			return
+		}
+
 		if (content.match(/^invite (.*)/i) && msg.mentions.users.size > 0){
 			// Invite a user to your island
 			log.debug(`${user.username} inviting ${mention.username}`)

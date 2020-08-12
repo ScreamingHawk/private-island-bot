@@ -1,5 +1,6 @@
 const log = require('./logger')
 const emoji = require('./emoji')
+const datastore = require('./datastore')
 
 // Reply to a message in a channel
 module.exports.reply = reply = (msg, content) => {
@@ -59,6 +60,7 @@ module.exports.addHelpMessage = addHelpMessage = channel => {
 	channel.send(
 		emoji.island + "**Island Management**" + emoji.island +
 		"\n```move in/out - to set up your private island on the server\n" +
+		"rename <new_name> - rename your private island\n" +
 		"invite @user - to give a user access to your private island\n" +
 		"boot @user - to remove a user from your private island\n" +
 		"nsfw/sfw - to make your island NSFW or SFW\n" +
@@ -104,8 +106,23 @@ module.exports.islandGroup = islandGroup = (discord) => {
 
 // Find the channel for the user
 module.exports.findChannel = findChannel = (discord, user) => {
+	const data = datastore.getUserData(user)
+	let chan = null
+	if (data.channelId){
+		chan = this.getGuild(discord).channels.cache.get(data.channelId)
+		if (chan){
+			return chan
+		}
+	}
+	// Fail over to username look up
 	const uname = user.username.toLowerCase()
-	return this.getGuild(discord).channels.cache.find(c => c.name.startsWith(`${uname}s-`))
+	chan = this.getGuild(discord).channels.cache.find(c => c.name.startsWith(`${uname}s-`))
+	if (chan){
+		// Update store
+		data.channelId = chan.id
+		datastore.saveData(discord)
+	}
+	return chan
 }
 
 // Create a channel for a user
@@ -134,6 +151,9 @@ module.exports.createChannel = createChannel = (discord, user) => {
 			.then(chan => {
 				chan.send(`${emoji.island} Welcome to ${user.username}'s island! ${emoji.island}`)
 					.catch(log.error)
+				// Persist channel data
+				datastore.getUserData(user).channelId = chan.id
+				datastore.saveData(discord)
 			})
 			.catch(log.error)
 	}
@@ -149,6 +169,16 @@ module.exports.deleteChannel = deleteChannel = async (discord, user, callback) =
 	}
 	if (callback) {
 		callback()
+	}
+}
+
+// Rename a channel for a user
+module.exports.renameChannel = renameChannel = async (discord, user, name) => {
+	const chan = this.findChannel(discord, user)
+	if (chan){
+		log.debug(`Renaming channel for ${user.username} to ${name}`)
+		await chan.setName(name)
+			.catch(log.error);
 	}
 }
 

@@ -10,6 +10,8 @@ A discord bot for moderating the Private Island server.
 
 `move out` to delete your "private island".
 
+`rename <new_name>` to rename your "private island".
+
 `invite @user` to give a user access to your "private island".
 
 `boot @user` to remove access from a user to your "private island".

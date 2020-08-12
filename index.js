@@ -24,6 +24,7 @@ discord.login(process.env.DISCORD_TOKEN).then(() => {
 	}
 
 	// Start the app
+	require('./src/datastore').loadData(discord)
 	require('./src/server').init(discord)
 }).catch(err => {
 	log.error("Unable to login to discord")
