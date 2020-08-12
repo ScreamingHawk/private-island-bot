@@ -111,8 +111,13 @@ module.exports.init = discord => {
 			}
 			// Rename a user channel
 			const name = match[1]
+			if (discord.channels.cache.find(c => c.name === name)){
+				log.warn(`${user.username} attempting to rename to ${name}`)
+				reply(msg, `Channel name ${name} is already in use`)
+				return
+			}
 			log.debug(`${user.username} renaming to ${name}`)
-			reply(msg, `Renaming ${user}'s island to ${name}\n`)
+			reply(msg, `Renaming ${user}'s island to ${name}`)
 			renameChannel(discord, user, name)
 			return
 		}
