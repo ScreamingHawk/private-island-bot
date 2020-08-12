@@ -11,7 +11,6 @@ module.exports.init = discord => {
 			channel.send(`${emoji.robot} Clearing all messages...`)
 			setTimeout(async () => {
 				await clearChannel(channel)
-				addHelpMessage(channel)
 			}, 3000)
 		}
 	}, 120000)
