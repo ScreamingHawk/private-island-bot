@@ -51,7 +51,7 @@ module.exports.init = discord => {
 			const member = getGuild(discord).member(user)
 			const oldRole = member.roles.cache.find(role => role.name.startsWith('#'))
 			if (oldRole){
-				log.debug(`Removing ${colour} role from ${user.username}`)
+				log.debug(`Removing ${oldRole.name} role from ${user.username}`)
 				await member.roles.remove(oldRole)
 					.catch(log.error)
 			}
