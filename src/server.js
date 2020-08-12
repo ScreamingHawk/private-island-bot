@@ -63,6 +63,7 @@ module.exports.init = discord => {
 			} else {
 				createRole(discord, colour, member)
 			}
+			return
 		}
 
 		if (!mentionOk(discord, msg, mention)){
@@ -97,9 +98,7 @@ module.exports.init = discord => {
 			// Reset a user's channel
 			log.debug(`${user.username} moving in`)
 			reply(msg, `Resetting ${user}'s island ${emoji.island}\n`)
-			deleteChannel(discord, user, () => {
-				createChannel(discord, user)
-			})
+			resetUserPerm(discord, user)
 			return
 		}
 

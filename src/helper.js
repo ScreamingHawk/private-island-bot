@@ -182,6 +182,28 @@ module.exports.renameChannel = renameChannel = async (discord, user, name) => {
 	}
 }
 
+// Reset channel perms on a user channel
+module.exports.resetUserPerm = resetUserPerm = (discord, user) => {
+	const chan = this.findChannel(discord, user)
+	if (chan){
+		chan.permissionOverwrites([
+			{
+				id: discord.user.id,
+				allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
+			},
+			{
+				id: user.id,
+				allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
+			},
+			{
+				id: this.everyoneRole(discord).id,
+				deny: ['VIEW_CHANNEL'],
+			},
+		],)
+			.catch(log.error)
+	}
+}
+
 // Update channel perms on a user channel for a mention
 module.exports.updateUserPerm = updateUserPerm = (discord, user, mention, allow) => {
 	const chan = this.findChannel(discord, user)

@@ -20,7 +20,7 @@ A discord bot for moderating the Private Island server.
 
 `colour ######` give yourself a specific colour. Accepts a hex code.
 
-`reset` to delete and recreate your "private island".
+`reset` to reset permissions on your "private island".
 
 ## Credits
 
