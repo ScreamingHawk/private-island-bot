@@ -131,7 +131,11 @@ module.exports.createChannel = createChannel = (discord, user) => {
 			],
 			reason: `Creating channel for ${user.username}`,
 		})
-			.catch(log.error);
+			.then(chan => {
+				chan.send(`${emoji.island} Welcome to ${user.username}'s island! ${emoji.island}`)
+					.catch(log.error)
+			})
+			.catch(log.error)
 	}
 }
 
