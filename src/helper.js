@@ -204,11 +204,10 @@ module.exports.resetUserPerm = resetUserPerm = (discord, user) => {
 	}
 }
 
-// Update channel perms on a user channel for a mention
-module.exports.updateUserPerm = updateUserPerm = (discord, user, mention, allow) => {
-	const chan = this.findChannel(discord, user)
+// Update channel perms on a channel for a user
+module.exports.updateUserPerm = updateUserPerm = async (chan, user, allow) => {
 	if (chan){
-		chan.updateOverwrite(mention.id, {
+		await chan.updateOverwrite(user.id, {
 			VIEW_CHANNEL: allow,
 		})
 			.catch(log.error)
@@ -216,10 +215,10 @@ module.exports.updateUserPerm = updateUserPerm = (discord, user, mention, allow)
 }
 
 // Add user to a user channel
-module.exports.inviteUser = inviteUser = (discord, user, mention) => updateUserPerm(discord, user, mention, true)
+module.exports.inviteUser = inviteUser = async (channel, user) => await updateUserPerm(channel, user, true)
 
 // Remove a user from a user channel
-module.exports.uninviteUser = uninviteUser = (discord, user, mention) => updateUserPerm(discord, user, mention, false)
+module.exports.uninviteUser = uninviteUser = async (channel, user) => await updateUserPerm(channel, user, false)
 
 // Make channel NSFW
 module.exports.nsfwChannel = nsfwChannel = (discord, user, nsfw) => {

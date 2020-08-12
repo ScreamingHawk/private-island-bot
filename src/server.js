@@ -125,7 +125,9 @@ module.exports.init = discord => {
 			// Invite a user to your island
 			log.debug(`${user.username} inviting ${mention.username}`)
 			reply(msg, `Inviting ${mention} to your island`)
-			inviteUser(discord, user, mention)
+			const chan = findChannel(discord, user)
+			await inviteUser(chan, mention)
+			chan.send(`${emoji.wave} ${mention}! Welcome to ${chan.name}`)
 			return
 		}
 
@@ -133,7 +135,9 @@ module.exports.init = discord => {
 			// Remove a user from your island
 			log.debug(`${user.username} removing ${mention.username}`)
 			reply(msg, `Booting ${mention} from your island`)
-			uninviteUser(discord, user, mention)
+			const chan = findChannel(discord, user)
+			await uninviteUser(chan, mention)
+			chan.send(`${mention.username} has left ${chan.name} ${emoji.boat}`)
 			return
 		}
 
