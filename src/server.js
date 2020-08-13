@@ -42,6 +42,26 @@ module.exports.init = discord => {
 			return
 		}
 
+		if (match = content.match(/^emote (.*) (.*)/i)){
+			if (match.length < 3){
+				log.debug(`${user.username} adding emoji "${content}" is invalid`)
+				reply(msg, "To add an emoji, supply a link to the image and a name.\ne.g. `emoji https://i.imgur.com/MqYAZT9.png bunny`")
+				return
+			}
+			// Add an emoji
+			log.debug(`${user.username} adding emote ${match[2]}`)
+			addEmote(discord, match[1], match[2])
+				.then(emote => {
+					reply(msg, `Added emote ${emote}`)
+				})
+				.catch(err => {
+					log.error(err)
+					reply(msg, "Unable to add emoji...")
+					reply(msg, "To add an emoji, supply a link to the image and a name.\ne.g. `emoji https://i.imgur.com/MqYAZT9.png bunny`")
+				})
+			return
+		}
+
 		if (content.match(/^colou?r .*/i)){
 			let match = content.match(/([0-9a-fA-F]{6})/)
 			if (!match || match.length < 2){

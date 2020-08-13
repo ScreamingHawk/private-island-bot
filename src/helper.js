@@ -60,11 +60,12 @@ module.exports.addHelpMessage = addHelpMessage = channel => {
 	channel.send(
 		emoji.island + "**Island Management**" + emoji.island +
 		"\n```move in/out - to set up your private island on the server\n" +
-		"rename <new_name> - rename your private island\n" +
+		"rename new_name - rename your private island\n" +
 		"invite @user - to give a user access to your private island\n" +
 		"boot @user - to remove a user from your private island\n" +
 		"nsfw/sfw - to make your island NSFW or SFW\n" +
 		"colour/color ###### - give yourself a colour role\n" +
+		"emote link name - Add an emote to the server\n" +
 		"reset - to burn down your private island and build it up again```" +
 		"Messages here are cleared every couple of minutes.\n" +
 		"You should probably mute this channel..."
@@ -227,4 +228,9 @@ module.exports.nsfwChannel = nsfwChannel = (discord, user, nsfw) => {
 		chan.setNSFW(nsfw)
 			.catch(log.error)
 	}
+}
+
+// Add emote
+module.exports.addEmote = addEmote = (discord, link, name) => {
+	return this.getGuild(discord).emojis.create(link, name)
 }

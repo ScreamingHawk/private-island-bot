@@ -20,6 +20,8 @@ A discord bot for moderating the Private Island server.
 
 `colour ######` give yourself a specific colour. Accepts a hex code.
 
+`emote <link> <name>` Add an emote to the server. Accepts an image link and emote name.
+
 `reset` to reset permissions on your "private island".
 
 ## Credits
