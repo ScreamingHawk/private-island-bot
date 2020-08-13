@@ -1,5 +1,6 @@
 const log = require('./logger')
 const emoji = require('./emoji')
+const { deleteEmote, reply } = require('./helper')
 require('./helper')
 
 module.exports.init = discord => {
@@ -46,6 +47,18 @@ module.exports.init = discord => {
 			if (match.length < 3){
 				log.debug(`${user.username} adding emoji "${content}" is invalid`)
 				reply(msg, "To add an emoji, supply a link to the image and a name.\ne.g. `emoji https://i.imgur.com/MqYAZT9.png bunny`")
+				return
+			}
+			if (match[1] === "delete" || match[1] === "remove"){
+				// Delete an emote
+				deleteEmote(discord, match[2])
+					.then(() => {
+						reply(msg, `Deleted emote ${match[2]}`)
+					})
+					.catch(err => {
+						log.error(err)
+						reply(msg, `Unable to delete emote ${match[2]}`)
+					})
 				return
 			}
 			// Add an emoji

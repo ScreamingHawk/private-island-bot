@@ -234,3 +234,12 @@ module.exports.nsfwChannel = nsfwChannel = (discord, user, nsfw) => {
 module.exports.addEmote = addEmote = (discord, link, name) => {
 	return this.getGuild(discord).emojis.create(link, name)
 }
+
+// Delete emote
+module.exports.deleteEmote = deleteEmote = (discord, name) => {
+	const e = this.getGuild(discord).emojis.cache.find(e => e.name === name)
+	if (e){
+		return e.delete()
+	}
+	return Promise.reject('Emote not found')
+}
