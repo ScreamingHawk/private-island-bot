@@ -37,6 +37,11 @@ module.exports.init = discord => {
 			return
 		}
 
+		if (!mentionOk(discord, msg, mention)){
+			reply(msg, `${emoji.think} You can't do that...`)
+			return
+		}
+
 		if (content.match(/^colou?r .*/i)){
 			let match = content.match(/([0-9a-fA-F]{6})/)
 			if (!match || match.length < 2){
@@ -63,11 +68,6 @@ module.exports.init = discord => {
 			} else {
 				createRole(discord, colour, member)
 			}
-			return
-		}
-
-		if (!mentionOk(discord, msg, mention)){
-			reply(msg, `${emoji.think} You can't do that...`)
 			return
 		}
 
