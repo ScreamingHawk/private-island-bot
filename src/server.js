@@ -70,7 +70,11 @@ module.exports.init = discord => {
 				.catch(err => {
 					log.error(err)
 					reply(msg, "Unable to add emoji...")
-					reply(msg, "To add an emoji, supply a link to the image and a name.\ne.g. `emoji https://i.imgur.com/MqYAZT9.png bunny`")
+					if (err && err.message && /image: /.test(err.message)){
+						reply(msg, err.message.split("image: ")[1])
+					} else {
+						reply(msg, "To add an emoji, supply a link to the image and a name.\ne.g. `emoji https://i.imgur.com/MqYAZT9.png bunny`")
+					}
 				})
 			return
 		}
