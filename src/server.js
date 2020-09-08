@@ -8,7 +8,8 @@ module.exports.init = discord => {
 	setInterval(async () => {
 		const channel = managerChannel(discord)
 		let fetched = await channel.messages.fetch({limit: 100})
-		if (fetched.size >= 2){
+			.catch(log.error)
+		if (fetched && fetched.size >= 2){
 			channel.send(`${emoji.robot} Clearing all messages...`)
 			setTimeout(async () => {
 				await clearChannel(channel)

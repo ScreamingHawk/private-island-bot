@@ -29,10 +29,12 @@ module.exports.clearChannel = clearChannel = async channel => {
 	do {
 		fetched = await channel.messages.fetch({limit: 100})
 			.catch(log.error)
-		fetched = fetched.filter(m => !m.pinned)
-		channel.bulkDelete(fetched)
-			.catch(log.error)
-	} while(fetched.size >= 2)
+		if (fetched){
+			fetched = fetched.filter(m => !m.pinned)
+			channel.bulkDelete(fetched)
+				.catch(log.error)
+		}
+	} while(fetched && fetched.size >= 2)
 }
 
 // Add a welcome message to the notice-board
