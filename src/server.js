@@ -23,8 +23,8 @@ module.exports.init = discord => {
 	})
 
 	// Goodbye message
-	discord.on('guildMemberRemove', user => {
-		channelByName(discord, "central").send(`${user} has been voted off the island! Farewell ${emoji.boat}!`)
+	discord.on('guildMemberRemove', member => {
+		channelByName(discord, "central").send(`${member.user.username} has been voted off the island! Farewell ${emoji.boat}!`)
 		deleteChannel(discord, user)
 	})
 
