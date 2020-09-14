@@ -173,7 +173,7 @@ module.exports.init = discord => {
 			// Rename a user channel description
 			const desc = match[1]
 			log.debug(`${user.username} updating description to ${desc}`)
-			reply(msg, `Updating ${user}'s island description to ${desc}`)
+			reply(msg, `Updating ${user}'s island description to "${desc}"`)
 			setChannelTopic(discord, user, desc)
 			return
 		}
