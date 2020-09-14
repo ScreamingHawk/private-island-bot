@@ -1,6 +1,6 @@
 const log = require('./logger')
 const emoji = require('./emoji')
-const { deleteEmote, reply } = require('./helper')
+const { deleteEmote, reply, listChannelTopics } = require('./helper')
 require('./helper')
 
 module.exports.init = discord => {
@@ -156,6 +156,25 @@ module.exports.init = discord => {
 			log.debug(`${user.username} renaming to ${name}`)
 			reply(msg, `Renaming ${user}'s island to ${name}`)
 			renameChannel(discord, user, name)
+			return
+		}
+
+		if (content.match(/^descriptions$/i)){
+			const descriptions = await listChannelTopics(discord)
+			reply(msg, descriptions)
+			return
+		}
+
+		if (match = content.match(/^description (.*)/i)){
+			if (match.length < 2){
+				reply(msg, "Please enter a new description for your island.\ne.g. `description A place to hang`")
+				return
+			}
+			// Rename a user channel description
+			const desc = match[1]
+			log.debug(`${user.username} updating description to ${desc}`)
+			reply(msg, `Updating ${user}'s island description to ${desc}`)
+			setChannelTopic(discord, user, desc)
 			return
 		}
 

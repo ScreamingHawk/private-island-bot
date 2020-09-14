@@ -63,6 +63,8 @@ module.exports.addHelpMessage = addHelpMessage = channel => {
 		emoji.island + "**Island Management**" + emoji.island +
 		"\n```move in/out - to set up your private island on the server\n" +
 		"rename new_name - rename your private island\n" +
+		"description topic_here - set the description of your island\n" +
+		"descriptions - list all island descriptions\n" +
 		"invite @user - to give a user access to your private island\n" +
 		"boot @user - to remove a user from your private island\n" +
 		"nsfw/sfw - to make your island NSFW or SFW\n" +
@@ -184,6 +186,24 @@ module.exports.renameChannel = renameChannel = async (discord, user, name) => {
 			.catch(log.error);
 	}
 }
+
+// Update a channel topic for a user
+module.exports.setChannelTopic = setChannelTopic = async (discord, user, desc) => {
+	const chan = this.findChannel(discord, user)
+	if (chan){
+		await chan.setTopic(desc)
+			.catch(log.error);
+	}
+}
+
+// Get all topics
+module.exports.listChannelTopics = listChannelTopics = async discord => {
+	return await this.getGuild(discord).channels.cache
+			.filter(c => c.type === "text" && c.name !== "data" && c.topic !== null)
+			.map(c => `**${c.name}:** ${c.topic}`)
+			.join("\n")
+}
+
 
 // Reset channel perms on a user channel
 module.exports.resetUserPerm = resetUserPerm = (discord, user) => {
