@@ -10,8 +10,8 @@ import { nsfwCommand } from './nsfw';
 
 export const commands: Command[] = [
   colourCommand,
-  descriptionCommand,
   descriptionsCommand,
+  descriptionCommand,
   emoteCommand,
   helpCommand,
   inviteCommand,

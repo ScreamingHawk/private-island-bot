@@ -1,11 +1,11 @@
-import type { Client, Message } from 'discord.js';
+import { EmbedBuilder, type Client, type Message } from 'discord.js';
 import { listChannelTopics, reply, setChannelTopic } from '../helper';
 import log from '../logger';
 import type { Command } from '../types';
 
 export const descriptionCommand: Command = {
   name: 'description',
-  pattern: /^description/i,
+  pattern: /^description(?!s)/i,
   async execute(discord: Client<true>, msg: Message) {
     const { author, content } = msg;
 
@@ -33,6 +33,15 @@ export const descriptionsCommand: Command = {
   pattern: /^descriptions/i,
   async execute(discord: Client<true>, msg: Message) {
     const descriptions = await listChannelTopics(discord);
-    await reply(msg, descriptions);
+    const embed = new EmbedBuilder()
+      .setTitle('Private Islands')
+      .setDescription('All the islands of the archipelago')
+      .addFields(
+        descriptions.map((desc) => ({
+          name: desc.channel.name,
+          value: `${desc.topic}\nOwner: ${desc.owner?.username ?? 'Unknown'}`,
+        })),
+      );
+    await msg.reply({ embeds: [embed] });
   },
 };

@@ -57,3 +57,7 @@ export const getUserData = (user: User): UserData => {
   }
   return data[user.id];
 };
+
+export const getChannelUserId = (chan: TextChannel): string | null => {
+  return Object.keys(data).find((id) => data[id].channelId === chan.id) ?? null;
+};

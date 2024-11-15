@@ -15,7 +15,7 @@ import {
   type Message,
   type Snowflake,
 } from 'discord.js';
-import { getUserData, saveData } from './datastore';
+import { getChannelUserId, getUserData, saveData } from './datastore';
 import emoji from './emoji';
 import log from './logger';
 
@@ -94,6 +94,7 @@ export const addWelcomeMessage = async (discord: Client<true>): Promise<void> =>
   if (chan && chan.type === ChannelType.GuildText) {
     const guild = await getGuild(discord);
     const owner = await discord.users.fetch(guild.ownerId);
+    const managerChannel = await channelByName(discord, 'manager');
     chan
       .send(
         emoji.island +
@@ -102,13 +103,13 @@ export const addWelcomeMessage = async (discord: Client<true>): Promise<void> =>
           '\n' +
           '\nThis server offers a self managed safe space for everyone. ' +
           `\nChat in ${channelByName(discord, 'central')} to meet new people. ` +
-          `\nHit up the ${channelByName(discord, 'manager')} to invite people to your private island. ` +
+          `\nHit up the ${managerChannel} to invite people to your private island. ` +
           '\n' +
           "\nEveryone's private island is complety self managed. " +
           `\nThe sever owner ${owner.tag} is an unused account. ` +
           '\nNo one will view your island without your express consent. ' +
           '\n' +
-          `\nIf you like what you see then head on over to ${channelByName(discord, 'manager')} and request a \`move in\`! ` +
+          `\nIf you like what you see then head on over to ${managerChannel} and request a \`move in\`! ` +
           '\n' +
           '\nGrab a martini at the bar, sit back and relax. ' +
           '\n' +
@@ -179,6 +180,22 @@ export const getIslandGroup = async (discord: Client<true>): Promise<CategoryCha
   const group = guild.channels.cache.find((c) => c.name === 'islands');
   if (group && group.type === ChannelType.GuildCategory) {
     return group;
+  }
+  return null;
+};
+
+// Find the owner of a channel
+export const getChannelOwner = async (
+  discord: Client<true>,
+  chan: TextChannel,
+): Promise<User | null> => {
+  const id = getChannelUserId(chan);
+  if (id) {
+    const user = discord.users.cache.get(id) ?? null;
+    if (user) {
+      return user;
+    }
+    return discord.users.fetch(id).catch(() => null);
   }
   return null;
 };
@@ -290,13 +307,27 @@ export const setChannelTopic = async (
 };
 
 // Get all topics
-export const listChannelTopics = async (discord: Client<true>): Promise<string> => {
+type ChannelTopic = {
+  channel: TextChannel;
+  owner: User;
+  topic: string;
+};
+
+export const listChannelTopics = async (discord: Client<true>): Promise<ChannelTopic[]> => {
   const guild = await getGuild(discord);
-  return guild.channels.cache
+  const channels = guild.channels.cache
     .filter((c) => c.type === ChannelType.GuildText)
-    .filter((c) => c.name !== 'data' && c.topic !== null)
-    .map((c) => `**${c.name}:** ${c.topic}`)
-    .join('\n');
+    .filter((c) => c.topic !== null);
+
+  const topics = await Promise.all(
+    channels.map(async (c) => ({
+      channel: c,
+      owner: await getChannelOwner(discord, c),
+      topic: c.topic,
+    })),
+  );
+
+  return topics.filter((c) => c.topic !== null && c.owner !== null) as ChannelTopic[];
 };
 
 // Reset channel perms on a user channel
