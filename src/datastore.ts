@@ -1,11 +1,11 @@
 import { ChannelType, User, type Client, type TextChannel } from 'discord.js';
-import { getDiscordUser, getGuild } from './helper';
+import { getGuild } from './helper';
 import log from './logger';
 import type { BotData, UserData } from './types';
 
 let data: BotData = {};
 
-const getDataChannel = async (discord: Client): Promise<TextChannel> => {
+const getDataChannel = async (discord: Client<true>): Promise<TextChannel> => {
   const guild = await getGuild(discord);
   let chan = guild.channels.cache.find((c) => c.name === 'data');
   if (!chan) {
@@ -14,7 +14,7 @@ const getDataChannel = async (discord: Client): Promise<TextChannel> => {
       type: ChannelType.GuildText,
       permissionOverwrites: [
         {
-          id: getDiscordUser(discord).id,
+          id: discord.user.id,
           allow: ['ViewChannel', 'ManageMessages'],
         },
         {
@@ -32,14 +32,14 @@ const getDataChannel = async (discord: Client): Promise<TextChannel> => {
   return chan;
 };
 
-export const saveData = async (discord: Client): Promise<void> => {
+export const saveData = async (discord: Client<true>): Promise<void> => {
   const chan = await getDataChannel(discord);
   if (chan && chan.send) {
     chan.send(JSON.stringify(data));
   }
 };
 
-export const loadData = async (discord: Client): Promise<void> => {
+export const loadData = async (discord: Client<true>): Promise<void> => {
   log.debug('Loading data');
   const chan = await getDataChannel(discord);
   await chan.messages.fetch();

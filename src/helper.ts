@@ -19,14 +19,6 @@ import { getUserData, saveData } from './datastore';
 import emoji from './emoji';
 import log from './logger';
 
-export const getDiscordUser = (discord: Client): User => {
-  const user = discord.user;
-  if (!user) {
-    throw new Error('No user found');
-  }
-  return user;
-};
-
 // Reply to a message in a channel
 export const reply = async (msg: Message, content: string): Promise<void> => {
   const chan = msg.channel;
@@ -36,7 +28,11 @@ export const reply = async (msg: Message, content: string): Promise<void> => {
 };
 
 // Check mention is ok
-export const mentionOk = (discord: Client, msg: Message, mention: User | undefined): boolean => {
+export const mentionOk = (
+  discord: Client<true>,
+  msg: Message,
+  mention: User | undefined,
+): boolean => {
   if (!msg.content.match(/(invite|boot)/i)) {
     return true;
   }
@@ -46,7 +42,7 @@ export const mentionOk = (discord: Client, msg: Message, mention: User | undefin
 let guildCachePopulated = false;
 
 // Get the guild
-export const getGuild = async (discord: Client): Promise<Guild> => {
+export const getGuild = async (discord: Client<true>): Promise<Guild> => {
   const guild = discord.guilds.cache.first();
   if (!guild) {
     throw new Error('No guild found');
@@ -60,7 +56,10 @@ export const getGuild = async (discord: Client): Promise<Guild> => {
 };
 
 // Find a channel by name
-export const channelByName = async (discord: Client, name: string): Promise<TextChannel | null> => {
+export const channelByName = async (
+  discord: Client<true>,
+  name: string,
+): Promise<TextChannel | null> => {
   const guild = await getGuild(discord);
   const chan = guild.channels.cache.find((c) => c.name === name);
   if (chan && chan.type === ChannelType.GuildText) {
@@ -70,7 +69,7 @@ export const channelByName = async (discord: Client, name: string): Promise<Text
 };
 
 // Get manager channel
-export const managerChannel = async (discord: Client): Promise<TextChannel> => {
+export const managerChannel = async (discord: Client<true>): Promise<TextChannel> => {
   const chan = await channelByName(discord, 'manager');
   if (chan && chan.type === ChannelType.GuildText) {
     return chan;
@@ -93,7 +92,7 @@ export const clearChannel = async (channel: TextChannel): Promise<void> => {
 };
 
 // Add a welcome message to the notice-board
-export const addWelcomeMessage = async (discord: Client): Promise<void> => {
+export const addWelcomeMessage = async (discord: Client<true>): Promise<void> => {
   const chan = await channelByName(discord, 'notice-board');
   if (chan && chan.type === ChannelType.GuildText) {
     const guild = await getGuild(discord);
@@ -146,14 +145,14 @@ export const addHelpMessage = async (channel: TextChannel): Promise<void> => {
 };
 
 // Find role
-export const findRole = async (discord: Client, name: string): Promise<Role | null> => {
+export const findRole = async (discord: Client<true>, name: string): Promise<Role | null> => {
   const guild = await getGuild(discord);
   return guild.roles.cache.find((r) => r.name === name) || null;
 };
 
 // Create role
 export const createRole = async (
-  discord: Client,
+  discord: Client<true>,
   colour: ColorResolvable,
   member: GuildMember,
 ): Promise<Role | null> => {
@@ -173,7 +172,7 @@ export const createRole = async (
 };
 
 // Find island group
-export const getIslandGroup = async (discord: Client): Promise<CategoryChannel | null> => {
+export const getIslandGroup = async (discord: Client<true>): Promise<CategoryChannel | null> => {
   const guild = await getGuild(discord);
   const group = guild.channels.cache.find((c) => c.name === 'islands');
   if (group && group.type === ChannelType.GuildCategory) {
@@ -183,7 +182,10 @@ export const getIslandGroup = async (discord: Client): Promise<CategoryChannel |
 };
 
 // Find the channel for the user
-export const findChannel = async (discord: Client, user: User): Promise<TextChannel | null> => {
+export const findChannel = async (
+  discord: Client<true>,
+  user: User,
+): Promise<TextChannel | null> => {
   const guild = await getGuild(discord);
   const data = getUserData(user);
   let chan: GuildBasedChannel | undefined;
@@ -206,7 +208,7 @@ export const findChannel = async (discord: Client, user: User): Promise<TextChan
 };
 
 // Create a channel for a user
-export const createChannel = async (discord: Client, user: User): Promise<TextChannel> => {
+export const createChannel = async (discord: Client<true>, user: User): Promise<TextChannel> => {
   let chan = await findChannel(discord, user);
   if (!chan) {
     log.debug(`Creating channel for ${user.username}`);
@@ -220,7 +222,7 @@ export const createChannel = async (discord: Client, user: User): Promise<TextCh
       type: ChannelType.GuildText,
       permissionOverwrites: [
         {
-          id: getDiscordUser(discord).id,
+          id: discord.user.id,
           allow: ['ViewChannel', 'ManageMessages'],
         },
         {
@@ -245,7 +247,7 @@ export const createChannel = async (discord: Client, user: User): Promise<TextCh
 
 // Delete a channel for a user
 export const deleteChannel = async (
-  discord: Client,
+  discord: Client<true>,
   user: User,
   callback?: () => void,
 ): Promise<void> => {
@@ -260,7 +262,11 @@ export const deleteChannel = async (
 };
 
 // Rename a channel for a user
-export const renameChannel = async (discord: Client, user: User, name: string): Promise<void> => {
+export const renameChannel = async (
+  discord: Client<true>,
+  user: User,
+  name: string,
+): Promise<void> => {
   const chan = await findChannel(discord, user);
   if (chan) {
     log.debug(`Renaming channel for ${user.username} to ${name}`);
@@ -269,7 +275,11 @@ export const renameChannel = async (discord: Client, user: User, name: string): 
 };
 
 // Update a channel topic for a user
-export const setChannelTopic = async (discord: Client, user: User, desc: string): Promise<void> => {
+export const setChannelTopic = async (
+  discord: Client<true>,
+  user: User,
+  desc: string,
+): Promise<void> => {
   const chan = await findChannel(discord, user);
   if (chan) {
     log.debug(`Setting topic for ${user.username} to ${desc}`);
@@ -278,7 +288,7 @@ export const setChannelTopic = async (discord: Client, user: User, desc: string)
 };
 
 // Get all topics
-export const listChannelTopics = async (discord: Client): Promise<string> => {
+export const listChannelTopics = async (discord: Client<true>): Promise<string> => {
   const guild = await getGuild(discord);
   return guild.channels.cache
     .filter((c) => c.type === ChannelType.GuildText)
@@ -288,14 +298,14 @@ export const listChannelTopics = async (discord: Client): Promise<string> => {
 };
 
 // Reset channel perms on a user channel
-export const resetUserPerm = async (discord: Client, user: User): Promise<void> => {
+export const resetUserPerm = async (discord: Client<true>, user: User): Promise<void> => {
   const guild = await getGuild(discord);
   const chan = await findChannel(discord, user);
   if (chan && chan.type === ChannelType.GuildText) {
     chan.permissionOverwrites
       .set([
         {
-          id: getDiscordUser(discord).id,
+          id: discord.user.id,
           allow: ['ViewChannel', 'ManageMessages'],
         },
         {
@@ -335,7 +345,11 @@ export const uninviteUser = async (channel: TextChannel, user: User): Promise<vo
   await updateUserPerm(channel, user, false);
 
 // Make channel NSFW
-export const nsfwChannel = async (discord: Client, user: User, nsfw: boolean): Promise<void> => {
+export const nsfwChannel = async (
+  discord: Client<true>,
+  user: User,
+  nsfw: boolean,
+): Promise<void> => {
   const chan = await findChannel(discord, user);
   if (chan && chan.type === ChannelType.GuildText) {
     chan.setNSFW(nsfw).catch(log.error);
@@ -344,7 +358,7 @@ export const nsfwChannel = async (discord: Client, user: User, nsfw: boolean): P
 
 // Add emote
 export const addEmote = async (
-  discord: Client,
+  discord: Client<true>,
   link: string,
   name: string,
 ): Promise<GuildEmoji> => {
@@ -356,7 +370,7 @@ export const addEmote = async (
 };
 
 // Delete emote
-export const deleteEmote = async (discord: Client, name: string): Promise<GuildEmoji> => {
+export const deleteEmote = async (discord: Client<true>, name: string): Promise<GuildEmoji> => {
   const guild = await getGuild(discord);
   const e = guild.emojis.cache.find((e) => e.name === name);
   if (e) {

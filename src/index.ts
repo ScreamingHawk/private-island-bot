@@ -26,20 +26,28 @@ const discord = new Client({
 discord
   .login(process.env.DISCORD_TOKEN)
   .then(() => {
-    if (discord.user) {
-      log.info(`${discord.user.username} operational`);
-      // Fun status
-      if (Math.random() > 0.5) {
-        discord.user.setActivity({
-          name: 'with sand',
-          type: ActivityType.Playing,
-        });
-      } else {
-        discord.user.setActivity({
-          name: 'boats sail by',
-          type: ActivityType.Watching,
-        });
-      }
+    // Wait for discord to be ready
+    return new Promise((resolve) => {
+      discord.once('ready', resolve);
+    });
+  })
+  .then(() => {
+    if (!discord.isReady()) {
+      throw new Error('Discord not ready');
+    }
+
+    log.info(`${discord.user.username} operational`);
+    // Fun status
+    if (Math.random() > 0.5) {
+      discord.user.setActivity({
+        name: 'with sand',
+        type: ActivityType.Playing,
+      });
+    } else {
+      discord.user.setActivity({
+        name: 'boats sail by',
+        type: ActivityType.Watching,
+      });
     }
 
     // Start the app
