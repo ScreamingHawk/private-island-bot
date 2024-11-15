@@ -1,6 +1,22 @@
 # Private Island Bot
 
-A discord bot for moderating the Private Island server. 
+A discord bot for moderating the Private Island server.
+
+## Development
+
+Install [bun](https://bun.sh/docs/installation).
+
+Install dependencies:
+
+```
+bun install
+```
+
+Run the bot:
+
+```
+bun run dev
+```
 
 ## Commands
 

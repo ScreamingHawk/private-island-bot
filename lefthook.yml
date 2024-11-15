@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: false
+  commands:
+    1_prettier:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: bun prettier --write {staged_files}
+    2_eslint:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: bun eslint --fix {staged_files}
+    # Add files back to staging after formatting
+    3_add-files:
+      run: git add {staged_files}
