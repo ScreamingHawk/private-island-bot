@@ -21,10 +21,7 @@ import log from './logger';
 
 // Reply to a message in a channel
 export const reply = async (msg: Message, content: string): Promise<void> => {
-  const chan = msg.channel;
-  if (chan.type === ChannelType.GuildText) {
-    await chan.send(content);
-  }
+  await msg.reply(content);
 };
 
 // Check mention is ok
@@ -123,25 +120,30 @@ export const addWelcomeMessage = async (discord: Client<true>): Promise<void> =>
   }
 };
 
+const helpMessage = `${emoji.island}**Island Management**${emoji.island}
+\`\`\`
+move in/out - to set up your private island on the server
+rename new_name - rename your private island
+description topic_here - set the description of your island
+descriptions - list all island descriptions
+invite @user - to give a user access to your private island
+boot @user - to remove a user from your private island
+nsfw/sfw - to make your island NSFW or SFW
+colour/color ###### - give yourself a colour role
+emote link name - Add an emote to the server
+reset - to burn down your private island and build it up again
+\`\`\`
+Messages here are cleared every couple of minutes.
+You should probably mute this channel...`;
+
 // Add a help message to channel
 export const addHelpMessage = async (channel: TextChannel): Promise<void> => {
-  await channel.send(
-    emoji.island +
-      '**Island Management**' +
-      emoji.island +
-      '\n```move in/out - to set up your private island on the server\n' +
-      'rename new_name - rename your private island\n' +
-      'description topic_here - set the description of your island\n' +
-      'descriptions - list all island descriptions\n' +
-      'invite @user - to give a user access to your private island\n' +
-      'boot @user - to remove a user from your private island\n' +
-      'nsfw/sfw - to make your island NSFW or SFW\n' +
-      'colour/color ###### - give yourself a colour role\n' +
-      'emote link name - Add an emote to the server\n' +
-      'reset - to burn down your private island and build it up again```' +
-      'Messages here are cleared every couple of minutes.\n' +
-      'You should probably mute this channel...',
-  );
+  await channel.send(helpMessage);
+};
+
+// Reply with a help message
+export const replyHelpMessage = async (msg: Message): Promise<void> => {
+  await reply(msg, helpMessage);
 };
 
 // Find role
