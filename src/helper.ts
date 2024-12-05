@@ -74,6 +74,29 @@ export const managerChannel = async (discord: Client<true>): Promise<TextChannel
   throw new Error('Manager channel not found');
 };
 
+// Helper to batch delete messages, handling old messages individually
+const batchDelete = async (
+  channel: TextChannel,
+  messages: Collection<Snowflake, Message<true>>,
+): Promise<void> => {
+  const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+
+  // Filter into recent and old messages
+  const [recentMessages, oldMessages] = messages.partition(
+    (msg) => msg.createdTimestamp > twoWeeksAgo,
+  );
+
+  // Bulk delete recent messages
+  if (recentMessages.size > 0) {
+    await channel.bulkDelete(recentMessages);
+  }
+
+  // Delete old messages one by one
+  for (const message of oldMessages.values()) {
+    await message.delete();
+  }
+};
+
 // Clear a channel
 export const clearChannel = async (channel: TextChannel): Promise<void> => {
   let fetched: Collection<Snowflake, Message<true>>;
@@ -82,7 +105,7 @@ export const clearChannel = async (channel: TextChannel): Promise<void> => {
     if (fetched) {
       fetched = fetched.filter((m) => !m.pinned);
       if (fetched instanceof Collection) {
-        channel.bulkDelete(fetched).catch(log.error);
+        await batchDelete(channel, fetched);
       }
     }
   } while (fetched && fetched.size >= 2);
