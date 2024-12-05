@@ -12,10 +12,16 @@ Install dependencies:
 bun install
 ```
 
+Compile the bot:
+
+```
+bun run build
+```
+
 Run the bot:
 
 ```
-bun run dev
+bun run start
 ```
 
 ## Commands
